@@ -1,0 +1,187 @@
+{
+  "entities": {
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global company branding, hero banner, navigation, footer, SEO, and contact settings managed by admins.",
+      "type": "object",
+      "properties": {
+        "companyName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "tagline": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "phone": { "type": "string", "minLength": 5, "maxLength": 30 },
+        "email": { "type": "string", "minLength": 5, "maxLength": 120 },
+        "address": { "type": "string", "minLength": 5, "maxLength": 250 },
+        "domain": { "type": "string", "minLength": 3, "maxLength": 200 },
+        "confirmFreeEstimates": { "type": "boolean" },
+        "heroHeading": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "heroSubheading": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "heroDescription": { "type": "string", "minLength": 1, "maxLength": 600 },
+        "heroImageUrl": { "type": "string", "minLength": 1, "maxLength": 600 },
+        "aboutHeading": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "aboutDescription": { "type": "string", "minLength": 1, "maxLength": 1500 },
+        "seoTitle": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "seoDescription": { "type": "string", "minLength": 1, "maxLength": 320 },
+        "seoKeywords": { "type": "string", "minLength": 0, "maxLength": 400 },
+        "socialInstagram": { "type": "string", "minLength": 0, "maxLength": 300 },
+        "socialLinkedIn": { "type": "string", "minLength": 0, "maxLength": 300 },
+        "socialFacebook": { "type": "string", "minLength": 0, "maxLength": 300 },
+        "socialHouzz": { "type": "string", "minLength": 0, "maxLength": 300 },
+        "footerDisclaimer": { "type": "string", "minLength": 0, "maxLength": 800 },
+        "navLinks": { "type": "array" },
+        "footerLinks": { "type": "array" },
+        "faqs": { "type": "array" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["companyName", "phone", "email", "address", "heroHeading", "updatedAt"]
+    },
+    "ServiceItem": {
+      "title": "ServiceItem",
+      "description": "A construction, architecture, remodeling, exterior, or specialized service offered by Rdevelopmentgroup.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "number": { "type": "number" },
+        "category": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "title": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "description": { "type": "string", "minLength": 10, "maxLength": 1000 },
+        "benefits": { "type": "array" },
+        "imageUrl": { "type": "string", "minLength": 1, "maxLength": 600 },
+        "featured": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "number", "category", "title", "description", "benefits", "imageUrl", "updatedAt"]
+    },
+    "ProjectItem": {
+      "title": "ProjectItem",
+      "description": "A portfolio project item (clearly marked as either Sample Showcase or Completed Company Project).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "slug": { "type": "string", "minLength": 2, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "category": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "projectStatus": { "type": "string", "enum": ["sample", "completed"] },
+        "location": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "summary": { "type": "string", "minLength": 10, "maxLength": 600 },
+        "description": { "type": "string", "minLength": 10, "maxLength": 2500 },
+        "scopeItems": { "type": "array" },
+        "imageUrl": { "type": "string", "minLength": 1, "maxLength": 600 },
+        "beforeImageUrl": { "type": "string", "minLength": 0, "maxLength": 600 },
+        "afterImageUrl": { "type": "string", "minLength": 0, "maxLength": 600 },
+        "galleryImages": { "type": "array" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "slug", "title", "category", "projectStatus", "summary", "description", "imageUrl", "updatedAt"]
+    },
+    "ProjectCategory": {
+      "title": "ProjectCategory",
+      "description": "Managed portfolio and gallery category.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "order": { "type": "number" }
+      },
+      "required": ["id", "name", "order"]
+    },
+    "CmsPage": {
+      "title": "CmsPage",
+      "description": "Custom or edited website page managed through the Admin Dashboard.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "slug": { "type": "string", "minLength": 2, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "title": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "subtitle": { "type": "string", "minLength": 0, "maxLength": 300 },
+        "body": { "type": "string", "minLength": 1, "maxLength": 8000 },
+        "heroImageUrl": { "type": "string", "minLength": 0, "maxLength": 600 },
+        "showInNav": { "type": "boolean" },
+        "showInFooter": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "slug", "title", "body", "showInNav", "showInFooter", "updatedAt"]
+    },
+    "TestimonialItem": {
+      "title": "TestimonialItem",
+      "description": "Customer testimonial layout or verified client review managed by Admin.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "customerName": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "projectType": { "type": "string", "minLength": 2, "maxLength": 100 },
+        "feedback": { "type": "string", "minLength": 10, "maxLength": 800 },
+        "rating": { "type": "number" },
+        "isSampleLayout": { "type": "boolean" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "customerName", "projectType", "feedback", "rating", "isSampleLayout", "updatedAt"]
+    },
+    "CustomerInquiry": {
+      "title": "CustomerInquiry",
+      "description": "Estimate request or contact form submission (PII strictly restricted to Admins).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "inquirySource": { "type": "string", "enum": ["estimate", "contact"] },
+        "fullName": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "email": { "type": "string", "minLength": 5, "maxLength": 160 },
+        "phone": { "type": "string", "minLength": 5, "maxLength": 40 },
+        "projectType": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "propertyClass": { "type": "string", "enum": ["Residential", "Commercial"] },
+        "projectAddress": { "type": "string", "minLength": 0, "maxLength": 250 },
+        "estimatedBudget": { "type": "string", "minLength": 0, "maxLength": 80 },
+        "preferredStartDate": { "type": "string", "minLength": 0, "maxLength": 60 },
+        "description": { "type": "string", "minLength": 5, "maxLength": 3000 },
+        "attachmentUrls": { "type": "array" },
+        "privacyConsent": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["new", "reviewed", "scheduled", "archived"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "inquirySource", "fullName", "email", "phone", "projectType", "description", "privacyConsent", "status", "createdAt"]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Authorized admin record keyed by Firebase Auth UID.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "minLength": 5, "maxLength": 160 },
+        "role": { "type": "string", "enum": ["admin"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "role", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/site_settings/{settingId}": {
+      "schema": { "$ref": "#/entities/SiteSettings" },
+      "description": "Global site configuration document ('global'). Publicly readable, Admin writable."
+    },
+    "/services/{serviceId}": {
+      "schema": { "$ref": "#/entities/ServiceItem" },
+      "description": "Publicly readable catalog of construction, architecture, and remodeling services. Admin writable."
+    },
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/ProjectItem" },
+      "description": "Publicly readable portfolio projects (sample and completed). Admin writable."
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/ProjectCategory" },
+      "description": "Publicly readable project/gallery categories. Admin writable."
+    },
+    "/pages/{pageId}": {
+      "schema": { "$ref": "#/entities/CmsPage" },
+      "description": "Publicly readable dynamic CMS pages. Admin writable."
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": { "$ref": "#/entities/TestimonialItem" },
+      "description": "Publicly readable testimonial entries. Admin writable."
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": { "$ref": "#/entities/CustomerInquiry" },
+      "description": "Private customer inquiries containing PII. Strict public create validation; read/update/delete strictly restricted to Admins."
+    },
+    "/admins/{adminUid}": {
+      "schema": { "$ref": "#/entities/AdminUser" },
+      "description": "Authorized administrator registry."
+    }
+  }
+}

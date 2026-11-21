@@ -1,0 +1,251 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net (Default-Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Primitive Helpers ---
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isVerifiedUser() && (
+        request.auth.token.email == 'sarthaky2512@gmail.com' ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isBoundedString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    function isStringList(val, maxItems) {
+      return val is list && val.size() <= maxItems && (val.size() == 0 || val[0] is string);
+    }
+
+    // --- Entity Validation Blueprints ---
+    function isValidSiteSettings(data) {
+      return data.keys().hasAll(['companyName', 'phone', 'email', 'address', 'heroHeading', 'updatedAt'])
+        && data.keys().hasOnly([
+          'companyName', 'tagline', 'phone', 'email', 'address', 'domain',
+          'confirmFreeEstimates', 'heroHeading', 'heroSubheading', 'heroDescription',
+          'heroImageUrl', 'aboutHeading', 'aboutDescription', 'seoTitle',
+          'seoDescription', 'seoKeywords', 'socialInstagram', 'socialLinkedIn',
+          'socialFacebook', 'socialHouzz', 'footerDisclaimer', 'navLinks',
+          'footerLinks', 'faqs', 'updatedAt'
+        ])
+        && isBoundedString(data.companyName, 1, 100)
+        && isBoundedString(data.phone, 5, 30)
+        && isBoundedString(data.email, 5, 120)
+        && isBoundedString(data.address, 5, 250)
+        && isBoundedString(data.heroHeading, 1, 160)
+        && (!('tagline' in data) || isBoundedString(data.tagline, 0, 200))
+        && (!('domain' in data) || isBoundedString(data.domain, 0, 200))
+        && (!('confirmFreeEstimates' in data) || data.confirmFreeEstimates is bool)
+        && (!('heroSubheading' in data) || isBoundedString(data.heroSubheading, 0, 160))
+        && (!('heroDescription' in data) || isBoundedString(data.heroDescription, 0, 600))
+        && (!('heroImageUrl' in data) || isBoundedString(data.heroImageUrl, 0, 600))
+        && (!('aboutHeading' in data) || isBoundedString(data.aboutHeading, 0, 160))
+        && (!('aboutDescription' in data) || isBoundedString(data.aboutDescription, 0, 1500))
+        && (!('seoTitle' in data) || isBoundedString(data.seoTitle, 0, 120))
+        && (!('seoDescription' in data) || isBoundedString(data.seoDescription, 0, 320))
+        && (!('seoKeywords' in data) || isBoundedString(data.seoKeywords, 0, 400))
+        && (!('socialInstagram' in data) || isBoundedString(data.socialInstagram, 0, 300))
+        && (!('socialLinkedIn' in data) || isBoundedString(data.socialLinkedIn, 0, 300))
+        && (!('socialFacebook' in data) || isBoundedString(data.socialFacebook, 0, 300))
+        && (!('socialHouzz' in data) || isBoundedString(data.socialHouzz, 0, 300))
+        && (!('footerDisclaimer' in data) || isBoundedString(data.footerDisclaimer, 0, 800))
+        && (!('navLinks' in data) || (data.navLinks is list && data.navLinks.size() <= 14))
+        && (!('footerLinks' in data) || (data.footerLinks is list && data.footerLinks.size() <= 16))
+        && (!('faqs' in data) || (data.faqs is list && data.faqs.size() <= 20))
+        && data.updatedAt == request.time;
+    }
+
+    function isValidService(data) {
+      return data.keys().hasAll(['id', 'number', 'category', 'title', 'description', 'benefits', 'imageUrl', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'number', 'category', 'title', 'description', 'benefits', 'imageUrl', 'featured', 'updatedAt'])
+        && isValidId(data.id)
+        && data.number is number && data.number >= 1 && data.number <= 500
+        && isBoundedString(data.category, 2, 80)
+        && isBoundedString(data.title, 2, 120)
+        && isBoundedString(data.description, 10, 1000)
+        && isStringList(data.benefits, 10)
+        && isBoundedString(data.imageUrl, 1, 600)
+        && (!('featured' in data) || data.featured is bool)
+        && data.updatedAt == request.time;
+    }
+
+    function isValidProject(data) {
+      return data.keys().hasAll(['id', 'slug', 'title', 'category', 'projectStatus', 'summary', 'description', 'imageUrl', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'slug', 'title', 'category', 'projectStatus', 'location', 'summary', 'description', 'scopeItems', 'imageUrl', 'beforeImageUrl', 'afterImageUrl', 'galleryImages', 'updatedAt'])
+        && isValidId(data.id)
+        && isValidId(data.slug)
+        && isBoundedString(data.title, 2, 140)
+        && isBoundedString(data.category, 2, 80)
+        && (data.projectStatus == 'sample' || data.projectStatus == 'completed')
+        && (!('location' in data) || isBoundedString(data.location, 0, 120))
+        && isBoundedString(data.summary, 10, 600)
+        && isBoundedString(data.description, 10, 2500)
+        && (!('scopeItems' in data) || isStringList(data.scopeItems, 12))
+        && isBoundedString(data.imageUrl, 1, 600)
+        && (!('beforeImageUrl' in data) || isBoundedString(data.beforeImageUrl, 0, 600))
+        && (!('afterImageUrl' in data) || isBoundedString(data.afterImageUrl, 0, 600))
+        && (!('galleryImages' in data) || isStringList(data.galleryImages, 12))
+        && data.updatedAt == request.time;
+    }
+
+    function isValidCategory(data) {
+      return data.keys().hasAll(['id', 'name', 'order'])
+        && data.keys().hasOnly(['id', 'name', 'order'])
+        && isValidId(data.id)
+        && isBoundedString(data.name, 2, 80)
+        && data.order is number && data.order >= 0 && data.order <= 500;
+    }
+
+    function isValidCmsPage(data) {
+      return data.keys().hasAll(['id', 'slug', 'title', 'body', 'showInNav', 'showInFooter', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'slug', 'title', 'subtitle', 'body', 'heroImageUrl', 'showInNav', 'showInFooter', 'updatedAt'])
+        && isValidId(data.id)
+        && isValidId(data.slug)
+        && isBoundedString(data.title, 2, 140)
+        && (!('subtitle' in data) || isBoundedString(data.subtitle, 0, 300))
+        && isBoundedString(data.body, 1, 8000)
+        && (!('heroImageUrl' in data) || isBoundedString(data.heroImageUrl, 0, 600))
+        && data.showInNav is bool
+        && data.showInFooter is bool
+        && data.updatedAt == request.time;
+    }
+
+    function isValidTestimonial(data) {
+      return data.keys().hasAll(['id', 'customerName', 'projectType', 'feedback', 'rating', 'isSampleLayout', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'customerName', 'projectType', 'feedback', 'rating', 'isSampleLayout', 'updatedAt'])
+        && isValidId(data.id)
+        && isBoundedString(data.customerName, 2, 100)
+        && isBoundedString(data.projectType, 2, 100)
+        && isBoundedString(data.feedback, 10, 800)
+        && data.rating is number && data.rating >= 1 && data.rating <= 5
+        && data.isSampleLayout is bool
+        && data.updatedAt == request.time;
+    }
+
+    function isValidInquiry(data) {
+      return data.keys().hasAll(['id', 'inquirySource', 'fullName', 'email', 'phone', 'projectType', 'description', 'privacyConsent', 'status', 'createdAt'])
+        && data.keys().hasOnly(['id', 'inquirySource', 'fullName', 'email', 'phone', 'projectType', 'propertyClass', 'projectAddress', 'estimatedBudget', 'preferredStartDate', 'description', 'attachmentUrls', 'privacyConsent', 'status', 'createdAt'])
+        && isValidId(data.id)
+        && (data.inquirySource == 'estimate' || data.inquirySource == 'contact')
+        && isBoundedString(data.fullName, 2, 120)
+        && isBoundedString(data.email, 5, 160)
+        && isBoundedString(data.phone, 5, 40)
+        && isBoundedString(data.projectType, 2, 80)
+        && (!('propertyClass' in data) || (data.propertyClass == 'Residential' || data.propertyClass == 'Commercial'))
+        && (!('projectAddress' in data) || isBoundedString(data.projectAddress, 0, 250))
+        && (!('estimatedBudget' in data) || isBoundedString(data.estimatedBudget, 0, 80))
+        && (!('preferredStartDate' in data) || isBoundedString(data.preferredStartDate, 0, 60))
+        && isBoundedString(data.description, 5, 3000)
+        && (!('attachmentUrls' in data) || isStringList(data.attachmentUrls, 5))
+        && data.privacyConsent == true
+        && (data.status == 'new' || data.status == 'reviewed' || data.status == 'scheduled' || data.status == 'archived');
+    }
+
+    function isValidAdminUser(data) {
+      return data.keys().hasAll(['email', 'role', 'createdAt'])
+        && data.keys().hasOnly(['email', 'role', 'createdAt'])
+        && isBoundedString(data.email, 5, 160)
+        && data.role == 'admin'
+        && data.createdAt == request.time;
+    }
+
+    // --- Collection Rules ---
+    match /site_settings/{settingId} {
+      allow get: if isValidId(settingId);
+      allow list: if false;
+      allow create: if isAdmin() && isValidId(settingId) && isValidSiteSettings(incoming());
+      allow update: if isAdmin() && isValidId(settingId) && isValidSiteSettings(incoming());
+      allow delete: if false;
+    }
+
+    match /services/{serviceId} {
+      allow get: if isValidId(serviceId);
+      allow list: if true;
+      allow create: if isAdmin() && isValidId(serviceId) && isValidService(incoming()) && incoming().id == serviceId;
+      allow update: if isAdmin() && isValidId(serviceId) && isValidService(incoming()) && incoming().id == existing().id;
+      allow delete: if isAdmin() && isValidId(serviceId);
+    }
+
+    match /projects/{projectId} {
+      allow get: if isValidId(projectId);
+      allow list: if true;
+      allow create: if isAdmin() && isValidId(projectId) && isValidProject(incoming()) && incoming().id == projectId;
+      allow update: if isAdmin() && isValidId(projectId) && isValidProject(incoming()) && incoming().id == existing().id;
+      allow delete: if isAdmin() && isValidId(projectId);
+    }
+
+    match /categories/{categoryId} {
+      allow get: if isValidId(categoryId);
+      allow list: if true;
+      allow create: if isAdmin() && isValidId(categoryId) && isValidCategory(incoming()) && incoming().id == categoryId;
+      allow update: if isAdmin() && isValidId(categoryId) && isValidCategory(incoming()) && incoming().id == existing().id;
+      allow delete: if isAdmin() && isValidId(categoryId);
+    }
+
+    match /pages/{pageId} {
+      allow get: if isValidId(pageId);
+      allow list: if true;
+      allow create: if isAdmin() && isValidId(pageId) && isValidCmsPage(incoming()) && incoming().id == pageId;
+      allow update: if isAdmin() && isValidId(pageId) && isValidCmsPage(incoming()) && incoming().id == existing().id;
+      allow delete: if isAdmin() && isValidId(pageId);
+    }
+
+    match /testimonials/{testimonialId} {
+      allow get: if isValidId(testimonialId);
+      allow list: if true;
+      allow create: if isAdmin() && isValidId(testimonialId) && isValidTestimonial(incoming()) && incoming().id == testimonialId;
+      allow update: if isAdmin() && isValidId(testimonialId) && isValidTestimonial(incoming()) && incoming().id == existing().id;
+      allow delete: if isAdmin() && isValidId(testimonialId);
+    }
+
+    match /inquiries/{inquiryId} {
+      allow get: if isAdmin() && isValidId(inquiryId);
+      allow list: if isAdmin();
+      allow create: if isValidId(inquiryId)
+        && isValidInquiry(incoming())
+        && incoming().id == inquiryId
+        && incoming().status == 'new'
+        && incoming().createdAt == request.time;
+      allow update: if isAdmin()
+        && isValidId(inquiryId)
+        && isValidInquiry(incoming())
+        && incoming().id == existing().id
+        && incoming().createdAt == existing().createdAt
+        && incoming().diff(existing()).affectedKeys().hasOnly(['status']);
+      allow delete: if isAdmin() && isValidId(inquiryId);
+    }
+
+    match /admins/{adminUid} {
+      allow get: if isSignedIn() && isValidId(adminUid) && (request.auth.uid == adminUid || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isAdmin() && isValidId(adminUid) && isValidAdminUser(incoming());
+      allow update: if false;
+      allow delete: if isAdmin() && isValidId(adminUid);
+    }
+  }
+}

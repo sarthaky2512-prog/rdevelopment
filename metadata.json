@@ -1,0 +1,6 @@
+{
+  "name": "Rdevelopmentgroup",
+  "description": "Rdevelopmentgroup is an American construction, architectural design, interior design, and residential & commercial remodeling company based in Clifton, Virginia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
