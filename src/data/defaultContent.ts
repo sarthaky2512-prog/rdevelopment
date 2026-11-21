@@ -66,14 +66,14 @@ export const DEFAULT_FAQS: FaqItem[] = [
     id: 'faq-8',
     question: 'How can I contact Rdevelopmentgroup?',
     answer:
-      'You can reach our team directly by phone at +8444543465, by email at support@rdevelopmentgroup.com, via our Contact Us page, or at 6805 Marleigh Ct, Clifton, Virginia 20124, USA.',
+      'You can reach our team directly by phone at +1 8444543465, by email at support@rdevelopmentgroup.com, via our Contact Us page, or at 6805 Marleigh Ct, Clifton, Virginia 20124, USA.',
   },
 ];
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   companyName: 'Rdevelopmentgroup',
   tagline: 'BUILDING YOUR VISION. CREATING YOUR FUTURE.',
-  phone: '+8444543465',
+  phone: '+1 8444543465',
   email: 'support@rdevelopmentgroup.com',
   address: '6805 Marleigh Ct, Clifton, Virginia 20124, USA.',
   domain: import.meta.env.VITE_SITE_URL || 'https://rdevelopmentgroup.com',

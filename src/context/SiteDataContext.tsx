@@ -165,9 +165,20 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
       (snap) => {
         if (snap.exists()) {
           const data = snap.data() as Partial<SiteSettings>;
+          const normalizedFaqs =
+            Array.isArray(data.faqs) && data.faqs.length > 0
+              ? data.faqs.map((faq) => ({
+                  ...faq,
+                  answer: faq.answer.replace(/\+8444543465/g, '+1 8444543465'),
+                }))
+              : DEFAULT_SITE_SETTINGS.faqs;
           setSettings({
             ...DEFAULT_SITE_SETTINGS,
             ...data,
+            phone:
+              data.phone === '+8444543465' || !data.phone
+                ? '+1 8444543465'
+                : data.phone,
             heroVideoUrl:
               data.heroVideoUrl && data.heroVideoUrl.trim()
                 ? data.heroVideoUrl
@@ -180,10 +191,7 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
               Array.isArray(data.footerLinks) && data.footerLinks.length > 0
                 ? data.footerLinks
                 : DEFAULT_SITE_SETTINGS.footerLinks,
-            faqs:
-              Array.isArray(data.faqs) && data.faqs.length > 0
-                ? data.faqs
-                : DEFAULT_SITE_SETTINGS.faqs,
+            faqs: normalizedFaqs,
           });
         }
         setLoading(false);
