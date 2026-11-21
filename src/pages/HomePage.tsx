@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
@@ -102,10 +102,11 @@ const WORK_PROCESS = [
 
 export function HomePage({ quotaExceeded }: { quotaExceeded?: boolean }) {
   const { settings, services, projects } = useSiteData();
+  const [videoFailed, setVideoFailed] = useState(false);
 
-  const estimateLabel = settings.confirmFreeEstimates
-    ? 'Get a Free Estimate'
-    : 'Request an Estimate';
+  const heroVideoSrc =
+    settings.heroVideoUrl?.trim() ||
+    'https://gfk0fto1mnuj6g6f.public.blob.vercel-storage.com/Create_architecture_renovation_v%E2%80%A6_9b51c2e8.mp4';
 
   const featuredServices = services.filter((s) => s.featured).slice(0, 6);
   const featuredProjects = projects.slice(0, 3);
@@ -116,14 +117,30 @@ export function HomePage({ quotaExceeded }: { quotaExceeded?: boolean }) {
     <div>
       {/* 1. HERO SECTION */}
       <section className="relative min-h-[680px] lg:min-h-[820px] flex items-center bg-[#0B0B0C] text-[#FAFAF8] overflow-hidden">
-        <SafeImage
-          src={settings.heroImageUrl}
-          alt="Luxury custom residential architecture by Rdevelopmentgroup"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+        {!videoFailed ? (
+          <video
+            key={heroVideoSrc}
+            src={heroVideoSrc}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            controls={false}
+            disablePictureInPicture
+            aria-hidden="true"
+            onError={() => setVideoFailed(true)}
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          />
+        ) : (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-br from-[#141416] via-[#0B0B0C] to-[#1A1610]"
+          />
+        )}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-r from-[#0B0B0C]/90 via-[#0B0B0C]/65 to-[#0B0B0C]/35"
+          className="absolute inset-0 bg-gradient-to-r from-[#0B0B0C]/85 via-[#0B0B0C]/60 to-[#0B0B0C]/35"
         />
 
         <div className="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-10 py-24 w-full">
@@ -137,15 +154,12 @@ export function HomePage({ quotaExceeded }: { quotaExceeded?: boolean }) {
             <p className="text-base sm:text-lg text-neutral-200 leading-relaxed max-w-2xl">
               {settings.heroDescription}
             </p>
-            <p className="font-display text-xl sm:text-2xl tracking-wide text-[#D4AF37]">
-              {settings.heroSubheading}
-            </p>
             <div className="pt-4 flex flex-wrap items-center gap-4">
               <Link
                 to="/estimate"
                 className="px-7 py-4 bg-[#D4AF37] text-[#0B0B0C] text-xs font-semibold uppercase tracking-[0.18em] hover:bg-[#C59B40] transition-colors inline-flex items-center gap-2 whitespace-nowrap shrink-0"
               >
-                <span>{estimateLabel}</span>
+                <span>Request a Free Estimate</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
@@ -352,7 +366,7 @@ export function HomePage({ quotaExceeded }: { quotaExceeded?: boolean }) {
             <div className="lg:col-span-6 min-h-[340px] overflow-hidden order-1 lg:order-2">
               <SafeImage
                 src={IMAGES.commercialOffice}
-                alt="Modern commercial office lobby construction"
+                alt="Modern architectural commercial building exterior and twilight plaza"
                 className="w-full h-full object-cover"
               />
             </div>

@@ -40,6 +40,7 @@ import {
   DEFAULT_SERVICES,
   DEFAULT_SITE_SETTINGS,
   DEFAULT_TESTIMONIALS,
+  IMAGES,
 } from '../data/defaultContent';
 import {
   CmsPage,
@@ -167,6 +168,10 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
           setSettings({
             ...DEFAULT_SITE_SETTINGS,
             ...data,
+            heroVideoUrl:
+              data.heroVideoUrl && data.heroVideoUrl.trim()
+                ? data.heroVideoUrl
+                : DEFAULT_SITE_SETTINGS.heroVideoUrl,
             navLinks:
               Array.isArray(data.navLinks) && data.navLinks.length > 0
                 ? data.navLinks
@@ -188,11 +193,21 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
+    const LEGACY_COMMERCIAL_IMG =
+      '/src/assets/images/commercial_office_architecture_1795255906442.jpg';
+
     const unsubServices = onSnapshot(
       query(collection(db, 'services'), orderBy('number', 'asc')),
       (snap) => {
         if (!snap.empty) {
-          setServices(snap.docs.map((d) => d.data() as ServiceItem));
+          setServices(
+            snap.docs.map((d) => {
+              const item = d.data() as ServiceItem;
+              return item.imageUrl === LEGACY_COMMERCIAL_IMG
+                ? { ...item, imageUrl: IMAGES.commercialOffice }
+                : item;
+            })
+          );
         }
       },
       () => {
@@ -204,7 +219,14 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
       collection(db, 'projects'),
       (snap) => {
         if (!snap.empty) {
-          setProjects(snap.docs.map((d) => d.data() as ProjectItem));
+          setProjects(
+            snap.docs.map((d) => {
+              const item = d.data() as ProjectItem;
+              return item.imageUrl === LEGACY_COMMERCIAL_IMG
+                ? { ...item, imageUrl: IMAGES.commercialOffice }
+                : item;
+            })
+          );
         }
       },
       () => {}
@@ -302,6 +324,7 @@ export function SiteDataProvider({ children }: { children: React.ReactNode }) {
         heroSubheading: (next.heroSubheading || '').slice(0, 160),
         heroDescription: (next.heroDescription || '').slice(0, 600),
         heroImageUrl: (next.heroImageUrl || '').slice(0, 600),
+        heroVideoUrl: (next.heroVideoUrl || '').slice(0, 600),
         aboutHeading: (next.aboutHeading || '').slice(0, 160),
         aboutDescription: (next.aboutDescription || '').slice(0, 1500),
         seoTitle: (next.seoTitle || '').slice(0, 120),

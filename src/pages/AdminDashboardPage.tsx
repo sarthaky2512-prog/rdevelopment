@@ -586,10 +586,27 @@ export function AdminDashboardPage() {
                   className="w-full px-3.5 py-2.5 border border-neutral-300 text-sm"
                 />
               </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1.5">
+                  Hero Background Video URL
+                </label>
+                <input
+                  type="url"
+                  value={draftSettings.heroVideoUrl || ''}
+                  onChange={(e) =>
+                    setDraftSettings({
+                      ...draftSettings,
+                      heroVideoUrl: e.target.value,
+                    })
+                  }
+                  placeholder="https://..."
+                  className="w-full px-3.5 py-2.5 border border-neutral-300 text-sm"
+                />
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-end">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-700 mb-1.5">
-                    Hero Banner Image URL
+                    Hero Fallback Image URL
                   </label>
                   <input
                     type="text"

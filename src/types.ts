@@ -21,6 +21,7 @@ export interface SiteSettings {
   heroSubheading: string;
   heroDescription: string;
   heroImageUrl: string;
+  heroVideoUrl?: string;
   aboutHeading: string;
   aboutDescription: string;
   seoTitle: string;

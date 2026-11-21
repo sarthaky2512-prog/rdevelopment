@@ -12,7 +12,7 @@ export const IMAGES = {
   heroResidence: '/src/assets/images/hero_luxury_residence_1795255903792.jpg',
   studioCraftsmanship: '/src/assets/images/about_craftsmanship_studio_1795255906851.jpg',
   residentialHome: '/src/assets/images/residential_custom_home_1795255906865.jpg',
-  commercialOffice: '/src/assets/images/commercial_office_architecture_1795255906442.jpg',
+  commercialOffice: '/src/assets/images/commercial_banner_modern_1795257510901.jpg',
   kitchenLuxury: '/src/assets/images/kitchen_remodeling_luxury_1795255906596.jpg',
   bathroomSpa: '/src/assets/images/bathroom_spa_remodel_1795255906468.jpg',
   exteriorDeckRoof: '/src/assets/images/exterior_deck_roofing_1795255906693.jpg',
@@ -81,8 +81,10 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   heroHeading: 'BUILDING YOUR VISION. CREATING YOUR FUTURE.',
   heroSubheading: 'QUALITY CRAFTSMANSHIP. EXCEPTIONAL RESULTS.',
   heroDescription:
-    'At Rdevelopmentgroup, we transform ideas into beautiful, functional spaces through professional construction, architectural design, remodeling, and renovation services.',
+    'Professional Construction, Remodeling & Architecture Solutions.',
   heroImageUrl: IMAGES.heroResidence,
+  heroVideoUrl:
+    'https://gfk0fto1mnuj6g6f.public.blob.vercel-storage.com/Create_architecture_renovation_v%E2%80%A6_9b51c2e8.mp4',
   aboutHeading: 'BUILDING WITH QUALITY. DESIGNING WITH PURPOSE.',
   aboutDescription:
     'Rdevelopmentgroup is dedicated to delivering professional construction, architecture, remodeling, and home improvement solutions. We focus on quality craftsmanship, attention to detail, and customer satisfaction. From initial planning and design to renovation and finishing, our goal is to help customers create spaces that reflect their vision and needs.',

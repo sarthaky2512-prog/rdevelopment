@@ -16,6 +16,7 @@
         "heroSubheading": { "type": "string", "minLength": 1, "maxLength": 160 },
         "heroDescription": { "type": "string", "minLength": 1, "maxLength": 600 },
         "heroImageUrl": { "type": "string", "minLength": 1, "maxLength": 600 },
+        "heroVideoUrl": { "type": "string", "minLength": 0, "maxLength": 600 },
         "aboutHeading": { "type": "string", "minLength": 1, "maxLength": 160 },
         "aboutDescription": { "type": "string", "minLength": 1, "maxLength": 1500 },
         "seoTitle": { "type": "string", "minLength": 1, "maxLength": 120 },

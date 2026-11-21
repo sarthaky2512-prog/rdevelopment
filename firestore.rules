@@ -48,7 +48,7 @@ service cloud.firestore {
         && data.keys().hasOnly([
           'companyName', 'tagline', 'phone', 'email', 'address', 'domain',
           'confirmFreeEstimates', 'heroHeading', 'heroSubheading', 'heroDescription',
-          'heroImageUrl', 'aboutHeading', 'aboutDescription', 'seoTitle',
+          'heroImageUrl', 'heroVideoUrl', 'aboutHeading', 'aboutDescription', 'seoTitle',
           'seoDescription', 'seoKeywords', 'socialInstagram', 'socialLinkedIn',
           'socialFacebook', 'socialHouzz', 'footerDisclaimer', 'navLinks',
           'footerLinks', 'faqs', 'updatedAt'
@@ -64,6 +64,7 @@ service cloud.firestore {
         && (!('heroSubheading' in data) || isBoundedString(data.heroSubheading, 0, 160))
         && (!('heroDescription' in data) || isBoundedString(data.heroDescription, 0, 600))
         && (!('heroImageUrl' in data) || isBoundedString(data.heroImageUrl, 0, 600))
+        && (!('heroVideoUrl' in data) || isBoundedString(data.heroVideoUrl, 0, 600))
         && (!('aboutHeading' in data) || isBoundedString(data.aboutHeading, 0, 160))
         && (!('aboutDescription' in data) || isBoundedString(data.aboutDescription, 0, 1500))
         && (!('seoTitle' in data) || isBoundedString(data.seoTitle, 0, 120))
